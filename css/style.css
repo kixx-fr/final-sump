@@ -269,4 +269,31 @@ header.is-scrolling { box-shadow: var(--shadow-card); }
         background-color: #1E293B !important; /* Fond sombre cohérent */
         border: 1px solid #4B5563;
     }
+
+}
+/* ============================================================
+   🪄 MAGIE : ZOOM AUTOMATIQUE SUR LA CHAUSSURE (MODALE)
+   ============================================================ */
+
+/* 1. Le cadre : on cache ce qui dépasse */
+.preview-main-img-container {
+    padding: 0 !important; 
+    overflow: hidden;      
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. La photo : on la grossit de 35% pour manger les bords blancs */
+#preview-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: scale(1.35) !important; /* Le fameux zoom */
+    transition: transform 0.3s ease;
+}
+
+/* 3. Au survol : on zoome encore un peu plus */
+#preview-main-image:hover {
+    transform: scale(1.6) !important;
 }
