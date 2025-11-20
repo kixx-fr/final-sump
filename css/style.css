@@ -272,28 +272,33 @@ header.is-scrolling { box-shadow: var(--shadow-card); }
 
 }
 /* ============================================================
-   🪄 MAGIE : ZOOM AUTOMATIQUE SUR LA CHAUSSURE (MODALE)
+   🪄 MAGIE V3 : STÉROÏDES POUR LE CATALOGUE (GRILLE) UNIQUEMENT
    ============================================================ */
 
-/* 1. Le cadre : on cache ce qui dépasse */
-.preview-main-img-container {
-    padding: 0 !important; 
-    overflow: hidden;      
+/* 1. On vire les marges blanches dans le cadre de la grille */
+.product-card .img-frame {
+    padding: 0 !important;       /* Zéro marge interne */
+    overflow: hidden !important; /* Coupe ce qui dépasse si on zoome trop */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* 2. La photo : on la grossit de 35% pour manger les bords blancs */
-#preview-main-image {
+/* 2. On zoome fort sur la chaussure DANS la grille */
+.product-card .img-frame img.product-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transform: scale(1.35) !important; /* Le fameux zoom */
-    transition: transform 0.3s ease;
+    
+    /* 🔥 LE ZOOM MUSCLÉ 🔥 */
+    /* 1.4 = 140% de la taille. 
+       Si c'est trop gros, baisse à 1.3. Si c'est pas assez, monte à 1.5 */
+    transform: scale(1.4) !important; 
+    
+    transition: transform 0.4s ease;
 }
 
-/* 3. Au survol : on zoome encore un peu plus */
-#preview-main-image:hover {
-    transform: scale(1.6) !important;
+/* 3. Effet "Pop" quand on passe la souris sur la carte */
+.product-card:hover .img-frame img.product-image {
+    transform: scale(1.55) !important; /* Ça grossit encore un peu au survol */
 }
