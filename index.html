@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kicks - Boutique</title>
+  <meta name="description" content="Découvrez les meilleures sneakers et streetwear. Livraison en Guadeloupe, Martinique, Guyane et France.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
+  
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AXd7iZon2xRzhIauBjGdjwxQk237evP3BTtNfqIKpEaYDTOk9S733o-_GcPQIqhZ7bCalMG-M_PNaRHG&currency=EUR&disable-features=host-detection" async defer></script>
+  <script src="js/main.js?v=3.0" defer></script>
+
+  <style>
+    /* Styles Splash Screen (inchangés pour performance) */
+    #splash-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0d4232; z-index: 9999;
+      display: flex; justify-content: center; align-items: center;
+      font-family: 'Inter', sans-serif; color: #f7f7f7; text-align: center;
+      transition: opacity 0.5s ease-out, visibility 0.5s;
+    }
+    .christmas-container {
+      background: #990000; border: 5px solid #ffcc00; border-radius: 25px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      width: 95%; max-width: 450px; padding: 30px 20px;
+      position: relative;
+    }
+    .xmas-logo {
+      width: 80px; height: 80px; margin: 0 auto 15px; border-radius: 50%;
+      overflow: hidden; border: 4px solid #ffcc00;
+      box-shadow: 0 0 15px rgba(255,204,0,0.8);
+    }
+    .xmas-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .pulsing-text { 
+      display: inline-block; font-size: 1.2em; font-weight: 700; color: #ffcc00;
+      animation: textPulse 1s infinite alternate;
+    }
+    @keyframes textPulse {
+      from { text-shadow: 0 0 8px #ffcc00; transform: scale(1); }
+      to   { text-shadow: 0 0 20px #ffcc00; transform: scale(1.05); }
+    }
+    #start-button {
+      background: #ffcc00; color: #990000; border: 3px solid #ffcc00;
+      padding: 12px 25px; font-size: 1.1em; font-weight: bold; border-radius: 12px;
+      cursor: pointer; box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+      width: 100%; margin-top: 15px; transition: 0.3s;
+    }
+    #start-button:hover { background: #f7f7f7; color: #0f4c3a; transform: scale(1.03); }
+    .xmas-payments { margin-top: 25px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .xmas-payments img { 
+      border: 2px solid #ffcc00; border-radius: 8px; padding: 5px; 
+      height: 40px; background: #f7f7f7; 
+    }
+    .paypal-logo-anim { animation: pulse-pp 1.5s infinite; }
+    @keyframes pulse-pp {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,204,0,0.7);}
+      70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255,204,0,0);}
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,204,0,0);}
+    }
+    .credit-text-box {
+      background: #000; border: 1px solid #ffcc00; border-radius: 4px;
+      padding: 8px; font-size: 0.7em; width: 85%; margin: 12px auto 0;
+    }
+  </style>
+</head>
+
+<body data-api-url="https://script.google.com/macros/s/AKfycby0_lViOnzQ-Y6mFIEOFfddoY6vJFcB6SUo53a78ciyEO90sUy-AYQKvv_wTJoVYgI5/exec">
+
+  <div id="splash-screen">
+    <audio id="christmas-music" src="assets/jingle-bells.mp3" loop preload="auto"></audio>
+    
+    <div class="christmas-container">
+      <div class="xmas-logo"><img src="assets/logo-kixx.png" alt="Kixx"></div>
+      <h1 style="font-size: 26px; color: #ffcc00; margin-bottom: 10px;">Joyeuses Fêtes ! 🎁</h1>
+      <p style="font-weight: 500; line-height: 1.5; margin-bottom: 20px;">
+        Chaussures de Basketball & Sneakers.<br>
+        <span class="pulsing-text">Livraison Gratuite 48h – Qualité Authentique 🎅</span>
+      </p>
+      <button id="start-button">ENTRER DANS LA BOUTIQUE</button>
+      <div class="xmas-payments">
+        <img src="assets/paypal.png" class="paypal-logo-anim">
+        <img src="assets/sumup1.png">
+        <img src="assets/amex.png">
+        <img src="assets/googlepay.png">
+      </div>
+      <div class="credit-text-box">
+        *Un crédit vous engage et doit être remboursé.<br>
+        Vérifiez vos capacités de remboursement.<br>
+        Article L312-5 Code consommation.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+        const btn = document.getElementById('start-button');
+        const music = document.getElementById('christmas-music');
+        btn.addEventListener('click', () => {
+            music.volume = 0.5;
+            music.play().catch(e => console.log("Autoplay bloqué:", e));
+            btn.textContent = "CHARGEMENT...";
+            btn.disabled = true;
+            window.dispatchEvent(new Event('request-site-load'));
+        });
+    })();
+  </script>
+
+  <header id="site-header">
+    <div id="banner" class="topbar-banner"><div id="banner-content" class="max-container"><span id="banner-text"></span></div></div>
+    <nav class="max-container relative flex justify-between items-center py-4">
+      <div class="flex items-center gap-4" style="z-index: 20;"></div>
+      
+      <div class="absolute left-1/2 transform -translate-x-1/2 text-center" style="z-index: 10;">
+         <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="block">
+            <img src="https://i.ibb.co/GvN8CbtQ/logo.png" alt="Kicks" class="header-logo mx-auto">
+            <span id="logo-subtext"></span>
+            <span id="logo-subtext-mobile"></span>
+         </a>
+      </div>
+
+      <div id="cart-float-btn" class="cart-float-btn" style="z-index: 20;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        <span id="cart-count" class="cart-count">0</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-container my-8">
+    <section class="filters-section">
+      <input type="search" id="search" placeholder="Rechercher une paire..." class="form-input">
+      <select id="filter-category" class="form-input"><option value="">Toutes catégories</option></select>
+      <select id="filter-size" class="form-input"><option value="">Toutes tailles</option></select>
+    </section>
+
+    <section id="catalogue" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+    </section>
+
+    <nav id="pagination" class="flex justify-center space-x-2 mt-16"></nav>
+
+    <section id="youtube-embed-container" class="my-16 hidden max-w-5xl mx-auto">
+      <iframe id="youtube-iframe" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+    </section>
+  </main>
+  
+  <footer class="bg-gray-900 text-gray-400 mt-auto" style="padding-bottom: 40px;">
+    <div class="max-container py-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div>
+          <h4 class="font-bold text-lg mb-6 text-white uppercase tracking-wider">Infos</h4>
+          <ul class="space-y-3 text-sm">
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-cgv">Conditions Générales de Vente</button></li>
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-mentions">Mentions Légales</button></li>
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-politique">Politique de Confidentialité</button></li>
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-contact">Contact</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-6 text-white uppercase tracking-wider">Aide</h4>
+          <ul class="space-y-3 text-sm">
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-payment">Paiement Sécurisé</button></li>
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-shipping">Livraison 48h</button></li>
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-target="modal-cookies">Cookies</button></li>
+            <li><button type="button" class="footer-link hover:text-white transition" data-modal-iframe="https://avc.kixx.fr" data-modal-title="Avis Clients">Avis Clients</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-6 text-white uppercase tracking-wider">Newsletter</h4>
+          <form id="newsletter-form" class="space-y-3">
+            <input type="text" id="newsletter-nom" placeholder="Nom" class="form-input bg-gray-800 border-gray-700 text-white">
+            <input type="text" id="newsletter-prenom" placeholder="Prénom" class="form-input bg-gray-800 border-gray-700 text-white">
+            <input type="email" id="newsletter-email" placeholder="Email" class="form-input bg-gray-800 border-gray-700 text-white">
+            <button type="submit" id="btn-newsletter" class="add-btn w-full">Rejoindre</button>
+            <p id="newsletter-status" class="text-sm text-center mt-2"></p>
+          </form>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-xs text-gray-600">
+        &copy; 2024 Kicks. Tous droits réservés.
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/590690366198" class="whatsapp-float-btn" target="_blank" aria-label="WhatsApp">
+    <img src="assets/whatsapp.png" alt="WhatsApp">
+  </a>
+  <div id="modal-cgv" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Conditions Générales de Vente</h3>
+        <button class="close-round-btn modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-scroll-content text-sm leading-relaxed">
+        <div class="info-box mb-6">
+          <p><strong>Kicks – Entreprise Individuelle R.laskari</strong><br>
+          SIREN : 990351702<br>
+          Adresse : Résidence Les ESSES3 bat 28 porte 2822<br>
+          97139 Les Abymes<br>
+          Email : kickshopgw@gmail.com<br>
+          Site internet : www.kixx.fr</p>
+        </div>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">1. Objet</h4>
+          <p>Les présentes conditions générales de vente sont applicables à toute vente réalisée sur le site Kicks.fr et conclue entreKicks E.I RL d’une part, ci-après dénommée " Kicks ", et toute personne physique souhaitant procéder à un achat via le site Internet de " Kicks EI RL" d’autre part, dénommée ci-après " l’acheteur ". Le fait de passer commande implique l'adhésion pleine et entière de l’acheteur aux présentes conditions générales. Kicks EI RL se réserve de pouvoir modifier ses conditions de vente à tout moment. Dans ce cas, les conditions applicables seront celles en vigueur à la date de la commande par l’acheteur.</p>
+          <p class="mt-2">Les présentes Conditions Générales de Vente (CGV) ont pour objet de définir les droits et obligations entre Kicks EI RL et tout Client (personne physique majeure, non professionnelle), dans le cadre de la vente de produits via le site internet.</p>
+          <p class="mt-2">Toute commande implique l’acceptation pleine, entière et sans réserve des présentes CGV, accessibles à tout moment sur le site www.gamekicks.fr.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">2. Capacité juridique</h4>
+          <p>L’acheteur, qui souhaite acheter un produit doit obligatoirement :<br>
+          créer un compte client en remplissant la fiche d’identification sur laquelle il indiquera toutes les coordonnées demandées ou s’identifier s’il dispose déjà d’un compte client sur le site kixx.fr</p>
+          <p class="mt-2">En passant une commande via le présent Site Internet, vous (le client) garantissez :<br>
+          être majeur (âgé de 18 ans minimum) et avoir la capacité juridique de contracter une commande.</p>
+          <p class="mt-2">Kicks EI RL se réserve le droit d’annuler toute commande suspecte ou non conforme à cette condition.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">3. Produits</h4>
+          <p>Kicks EI RL propose à la vente :<br>
+          - des chaussures de sport neuves</p>
+          <p class="mt-2">Les produits proposés sont décrits de manière précise. Les photographies et visuels n’ont pas de valeur contractuelle.(Les photographies présentent sur le site sont les plus fidèles possibles mais ne peuvent assurer une similitude parfaite avec les produits proposés, notamment en ce qui concerne les couleurs.)</p>
+          <p class="mt-2">Kicks EI RL peut modifier ou retirer à tout moment un produit de son catalogue sans préavis.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">4. Prix</h4>
+          <p>Les prix sont indiqués en euros, Hors taxes comprises (TVA non applicable art. 293 B du CGI).</p>
+          <p>Les frais de livraison sont précisés avant validation de la commande.</p>
+          <p>Le prix applicable est celui en vigueur à la date de validation de la commande.</p>
+          <p>Kicks E.I RL se réserve le droit de modifier ses prix à tout moment.</p>
+          <p class="mt-2 font-bold">Erreur de prix</p>
+          <p>Malgré toute notre vigilance, il est possible qu’un prix erroné ou manifestement dérisoire soit affiché sur notre site en raison d’une erreur technique ou humaine.</p>
+          <p>Conformément art :1132 et 1133 du Code civil</p>
+          <p>Dans un tel cas, la commande ne pourra pas être validée et sera automatiquement annulée, même si elle avait été confirmée par le client.</p>
+          <p>conformement: Article 1169 du code civil</p>
+          <p>Kicks E.IRL procédera alors au remboursement intégral des sommes éventuellement déjà versées par le client, ou proposera un avoir de valeur équivalente, au choix du client.</p>
+          <p>Aucun dédommagement supplémentaire ne pourra être réclamé.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">5. Commande</h4>
+          <p>Le Client sélectionne les produits, saisit ses coordonnées, choisit son mode de livraison et effectue le paiement.</p>
+          <p>La commande n’est considérée comme définitive qu’après validation du paiement.</p>
+          <p>Le Client s’engage à fournir des informations exactes. Toute erreur engage sa responsabilité exclusive.</p>
+          <p>La confirmation de la commande entraîne acceptation des présentes conditions de vente, la reconnaissance d’en avoir parfaite connaissance et la renonciation à se prévaloir de ses propres conditions d’achat ou d’autres conditions.</p>
+          <p>L’ensemble des données fournies et la confirmation enregistrée vaudront preuve de la transaction. La confirmation vaudra signature et acceptation des opérations effectuées. Le vendeur communiquera par courrier électronique confirmation de la commande enregistrée.</p>
+          <p>Veuillez prendre en compte qu’une confirmation de commande ne confirme que la réception de votre commande. En revanche, ce n’est que lorsque vous recevez un e-mail attestant l’expédition que votre achat est confirmé à 100% et que la marchandise a été expédiée.</p>
+          <p>Nos offres de produits et prix sont valables tant qu’elles sont visibles sur le site, dans la limite des stocks disponibles.</p>
+          <p>Malgré tous nos efforts, il se peut qu’un produit commandé et validé ne soit plus disponible (erreur de stock ou rupture chez le fournisseur).</p>
+          <p>Conformément à l’article L.216-2 du Code de la consommation, Kicks E.I RL informera le client dans les meilleurs délais et proposera, au choix du client :<br>
+          – soit un remboursement intégral des sommes déjà versées, effectué dans un délai maximum de 14 jours,<br>
+          – soit l’émission d’un avoir de valeur équivalente utilisable sur le site,<br>
+          – soit l’échange contre un produit de valeur similaire, si le client l’accepte.</p>
+          <p>Aucun autre dédommagement ne pourra être réclamé en cas d’indisponibilité d’un produit.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">6. Paiement</h4>
+          <p>Les paiements sont effectués en ligne via des moyens sécurisés (carte bancaire, etc.).</p>
+          <p class="mt-2">Aucune commande ne sera préparée ni expédiée sans paiement intégral confirmé.</p>
+          <p class="mt-2 font-bold">Paiement sécurisé et fraude</p>
+          <p>Le règlement des commandes s’effectue en ligne par carte bancaire, via un système de paiement sécurisé.</p>
+          <p>Kicks E.I RL se réserve le droit de suspendre ou d’annuler toute commande en cas de refus d’autorisation de paiement de la part des organismes officiellement accrédités, ou en cas de non-paiement.</p>
+          <p>Kicks E.I RL pourra également annuler toute commande en cas de suspicion de fraude, d’utilisation abusive de moyens de paiement, ou d’utilisation d’un compte client non autorisé.</p>
+          <p>En cas d’annulation pour fraude ou suspicion de fraude, aucun dédommagement ne pourra être exigé par le client.</p>
+          <p class="mt-2 font-bold">Paiement par virement bancaire</p>
+          <p>Modalités et responsabilités :</p>
+          <p>les paiements par virement bancaire doivent être effectués exclusivement sur le RIB/IBAN communiqué par KICKS E.I RL par nos canaux officiels (WhatsApp, email ou tout autre moyen expressément mis à votre disposition). La commande ne sera prise en charge ni préparée ni expédiée qu’à réception effective et vérifiable des fonds sur notre compte bancaire.</p>
+          <p>Tous les frais bancaires, commissions et éventuelles taxes liés au virement sont à la charge du client ; le montant à payer doit donc être la somme nette indiquée sur la facture.</p>
+          <p>Il appartient au client de conserver et de fournir, à première demande, tout justificatif de virement (avis de virement, extrait ou capture d’écran) ; à défaut, nous nous réservons le droit de suspendre ou d’annuler la commande. Nous déclinons toute responsabilité en cas de virement effectué vers un compte autre que celui qui vous a été communiqué officiellement par nos services ; toute modification des coordonnées bancaires ne sera valable qu’après confirmation écrite de notre part via les canaux officiels précités. Si le paiement n’est pas crédité sur notre compte dans les 2 jours ouvrés suivant la date de commande, nous nous réservons le droit d’annuler la commande sans indemnité. En cas de contestation ou de litige relatif au paiement, seuls les relevés et justificatifs bancaires officiels feront foi. »</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">Limitation de responsabilité</h4>
+          <p>La responsabilité de Kicks ne pourra être engagée qu’en cas de faute prouvée et est strictement limitée au montant de la commande en cause.</p>
+          <p>Kicks E.I RL ne pourra en aucun cas être tenu responsable :<br>
+          – des dommages indirects ou immatériels (tels que perte de chance, perte d’exploitation, perte de données, préjudice financier, etc.),</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">7. Livraison</h4>
+          <p>Les produits sont livrés à l’adresse indiquée par le Client via :</p>
+          <p class="mt-2">Les délais de livraison sont indicatifs et non contractuels.</p>
+          <p>Kicks E.I RL ne saurait être tenu responsable d’un retard, d’un vol ou d’une perte du colis imputable au transporteur ou à une erreur du Client.</p>
+          <p>Une fois la commande passée au statut "préparation en cours" il est trop tard pour changer l'adresse de livraison celle-ci.</p>
+          <p>Le client est seul responsable de la vérification de son colis à sa réception auprès du livreur</p>
+          <p>Des réserves doivent être immédiatement émises auprès du livreur en cas de problème (colis endommagé, colis vide, article manquant etc.)</p>
+          <p>Colissimo Suivi Domicile sans signature : votre colis est livré sous 48h après son expédition.Les colis sont livrés à domicile dans la boîte aux lettres (si les dimensions le permettent). Pas de signature demandée.</p>
+          <p>Colissimo Suivi Domicile avec signature : votre colis est livré sous 48h après son expédition. Livraison à l’adresse de votre choix, avec signature.</p>
+          <p class="mt-2 font-bold">7.1- Limite de poids des envois</p>
+          <p>Pour garantir une expédition rapide et dans les meilleures conditions, les commandes passées sur kixx.fr sont limitées à un poids total maximal de 10 kilogrammes, correspondant à environ quatre (4)à cinq (5) paires de chaussures par envoi.</p>
+          <p>En cas de dépassement de ce poids ou de cette quantité, un ajustement des frais d’expédition pourra être appliqué. Le client en sera alors informé avant l’envoi de la commande.</p>
+          <p>Si aucun accord n’est trouvé concernant le règlement du supplément, KICKS se réserve le droit d’annuler la commande, sans que cela puisse donner lieu à une quelconque indemnisation ou pénalité pour le client. Le montant déjà réglé sera alors intégralement remboursé sur le moyen de paiement initial, dans un délai raisonnable.</p>
+          <p>Cette mesure vise à assurer la qualité et la rapidité de traitement des commandes, ainsi qu’une livraison optimale pour chaque client.</p>
+          <p class="mt-2 font-bold">Frais et taxes douanières :</p>
+          <p>Toute livraison en dehors de la Guadeloupe peut être soumise à des frais, qui vous seront demandés à réception par les autorités de votre pays. Nous vous recommandons de vous renseigner avant votre achat.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">8. Rétractation et retour</h4>
+          <p>Conformément à l’article L221-18 du Code de la consommation, le Client dispose d’un délai de 14 jours à compter de la réception de sa commande pour exercer son droit de rétractation sans motif.</p>
+          <p>Le retour est à la charge exclusive du Client, peu importe la nature ou le motif du retour.</p>
+          <p>La réexpédition est à la charge exclusive du client.</p>
+          <p>Sauf si érreur est Imputable à KIcks E.I RL</p>
+          <p>Les produits doivent être retournés :<br>
+          - dans leur état neuf, non utilisés, complets et dans leur emballage d'origine intact<br>
+          - accompagnés du formulaire de retour ci-dessous ou d'une déclaration dénuée d’ambiguïté exprimant la volonté de se rétracter.</p>
+          <p>Dans le cas où un colis est perdu suite à un retour à l'expéditeur ou pour erreur d'adressage, le client est considéré comme responsable de la perte du colis et aucun dédommagement ne pourra être demandé à Kicks E.I RL</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">9. Garanties</h4>
+          <p>Chaussures : garanties selon les dispositions légales françaises (garantie de conformité et garantie contre les vices cachés).</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">10. Limitation de responsabilité</h4>
+          <p>Kicks E.I RL ne peut être tenu responsable :<br>
+          - d’un mauvais usage des produits,<br>
+          - de pertes de données, dommages indirects ou consécutifs,<br>
+          - de l’indisponibilité du site internet,<br>
+          - d’un refus ou échec de garantie par le constructeur.</p>
+          <p>La responsabilité de Kicks E.I RL ne pourra être engagée qu’en cas de faute prouvée et est strictement limitée au montant de la commande en cause.</p>
+          <p>Kicks E.I RL ne pourra en aucun cas être tenu responsable :<br>
+          – des dommages indirects ou immatériels (tels que perte de chance, perte d’exploitation, perte de données, préjudice financier, etc.),<br>
+          – des retards ou impossibilités imputables au client (erreur d’adresse de livraison, absence lors de la livraison, non-retrait du colis dans les délais impartis),<br>
+          – des perturbations, pannes, interruptions des services ou difficultés techniques liées au réseau Internet, aux infrastructures informatiques ou au prestataire de paiement,<br>
+          – des dommages résultant d’un cas de force majeure tel que défini ci-dessous.</p>
+          <p class="mt-2 font-bold">Force majeure</p>
+          <p>Conformément à l’article 1218 du Code civil, KicksE.I RL ne pourra être tenu responsable en cas de manquement à ses obligations résultant d’un événement de force majeure indépendant de sa volonté.</p>
+          <p>Sont notamment considérés comme cas de force majeure (liste non exhaustive) : catastrophes naturelles, incendies, inondations, tempêtes, pandémies, coupures d’électricité, cyberattaques, guerres, attentats, grèves totales ou partielles, blocages des moyens de transport, ou toute autre circonstance échappant raisonnablement au contrôle de Kicks E.I RL</p>
+          <p>En cas de survenance d’un tel événement, l’exécution des obligations de Kicks E.I RL sera suspendue pendant toute la durée de l’événement, sans qu’aucun dédommagement ne puisse être exigé par le client.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">11. Données personnelles</h4>
+          <p>Kicks E.I RL  collecte uniquement les données nécessaires à l’exécution des commandes (identité, adresse, email).</p>
+          <p>Ces données ne sont ni revendues, ni cédées à des tiers.</p>
+          <p>Le Client peut exercer ses droits d’accès, de rectification ou de suppression en contactant : contact.kixxgw@gmail.com</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">12. Force majeure</h4>
+          <p>KicksE.I RL ne saurait être tenu responsable en cas de retard ou d’inexécution causés par un événement de force majeure : catastrophe naturelle, guerre, émeute, incendie, grève, coupure réseau, etc.</p>
+        </section>
+
+        <section class="mb-6">
+          <h4 class="font-bold text-lg mb-2">13. Droit applicable et juridiction compétente</h4>
+          <p>« Les présentes CGV sont soumises au droit français. En cas de litige, les parties rechercheront d’abord une solution amiable..Dans le cas exclusivement ou les 2 parties ne sauraient trouvé un accord:.</p>
+          <p>CM2C<br>
+          49 rue de Ponthieu<br>
+          75 008 PARIS<br>
+          Tel : 01 89 47 00 14<br>
+          Site internet : https://www.cm2c.net/declarer-un-litige.php<br>
+          Mail : litiges@cm2c.net</p>
+          <p>À défaut, le consommateur pourra saisir, au choix, la juridiction compétente de son lieu de résidence ou celle du siège social de Kicks (Tribunal de commerce de Pointe-à-Pitre). »</p>
+        </section>
+
+        <div class="border-t pt-4 mt-4">
+          <h4 class="font-bold mb-2">Formulaire de retour / rétractation</h4>
+          <p class="italic text-xs">À envoyer par email à: kixx.retour@gmail.com ou par courrier à : Rés Les Esses 3 Bat 28 porte 2822
+          97139 LES ABYMES</p>
+          <div class="mt-2 p-4 bg-gray-50 border rounded text-sm font-mono shadow-sm">
+            <p>Je vous notifie par la présente ma volonté d’exercer mon droit de rétractation, conformément à l’article L.221-18 du Code de la consommation.</p>
+            <p>Nom : ...............................................</p>
+            <p>Adresse : ............................................</p>
+            <p>Email : .................................................</p>
+            <p>Numéro de commande : ......................</p>
+            <p>Produit(s) concerné(s) : .........................</p>
+            <p>Date de réception : ..................................</p>
+            <p>Date de la demande : ...............................</p>
+            <p>Motif (facultatif) : ....................................</p>
+            <p>Signature (si envoi papier) : ........................) </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div id="modal-mentions" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Mentions Légales</h3>
+        <button class="close-round-btn modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-scroll-content text-sm leading-relaxed">
+        <p><strong>Mentions légales</strong></p>
+        <p>Entreprise individuelle immatriculée au RCS sous le numéro SIRET : 990 351 702 00016</p>
+        <p>Email de contact : contact.kixxgw@gmail.com</p>
+        <p>Responsable de la publication :R.laskari</p>
+        <p>Adresse du siège : Rés Les Esses 3 Bat 28 porte 2822<br>
+        97139 LES ABYMES</p>
+        <p>E.I RL Kicks</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-payment" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header"><h3 class="modal-title">Paiement Sécurisé</h3><button class="close-round-btn modal-close-btn">&times;</button></div>
+      <div class="modal-scroll-content">
+        <p class="mb-4">Nous acceptons les moyens de paiement suivants, sécurisés via SumUp :</p>
+        <img src="assets/sumup.png" alt="Visa Mastercard SumUp" class="payment-block-img">
+        <p class="mt-6">Les virements bancaires sont également acceptés (délai de traitement plus long).</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-politique" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header"><h3 class="modal-title">Politique de Confidentialité</h3><button class="close-round-btn modal-close-btn">&times;</button></div>
+      <div class="modal-scroll-content">
+        <p><strong>Données personnelles</strong></p>
+        <p>Kicks E.I RL collecte uniquement les données nécessaires à l’exécution des commandes (identité, adresse, email).</p>
+        <p>Ces données ne sont ni revendues, ni cédées à des tiers.</p>
+        <p>Le Client peut exercer ses droits d’accès, de rectification ou de suppression en contactant : contact.kixxgw@gmail.com</p>
+      </div>
+    </div>
+  </div>
+  <div id="modal-shipping" class="modal-backdrop hidden"><div class="modal-box"><div class="modal-header"><h3 class="modal-title">Livraison</h3><button class="close-round-btn modal-close-btn">&times;</button></div><div class="modal-scroll-content"><p>Livraison 48h Guadeloupe / Colissimo France.</p></div></div></div>
+  <div id="modal-cookies" class="modal-backdrop hidden"><div class="modal-box"><div class="modal-header"><h3 class="modal-title">Cookies</h3><button class="close-round-btn modal-close-btn">&times;</button></div><div class="modal-scroll-content"><p>Ce site utilise des cookies pour le fonctionnement du panier et des statistiques anonymes.</p></div></div></div>
+  <div id="modal-contact" class="modal-backdrop hidden"><div class="modal-box"><div class="modal-header"><h3 class="modal-title">Contact</h3><button class="close-round-btn modal-close-btn">&times;</button></div><div class="modal-scroll-content"><form id="contact-form" class="space-y-4"><input type="text" id="contact-prenom" placeholder="Prénom" class="form-input"><input type="email" id="contact-email" placeholder="Email" class="form-input"><textarea id="contact-message" rows="4" placeholder="Message" class="form-input"></textarea><button type="submit" id="btn-contact-submit" class="add-btn">Envoyer</button><p id="contact-status" class="text-center text-sm mt-2"></p></form></div></div></div>
+  
+  <div id="toast-notification" class="toast-notification">Message du toast</div>
+
+  <div id="cart-overlay" class="cart-overlay" role="dialog" aria-hidden="true">
+    <div class="cart-header">
+      <h2 class="cart-title">Panier (<span id="cart-count-header">0</span>)</h2>
+      <button id="close-cart" class="close-round-btn">&times;</button>
+    </div>
+    <div id="cart-shipping-incentive-bar" class="cart-incentive-bar" style="display: none;"></div>
+    <div class="cart-scroll-area">
+      <div id="cart-items"><div class="muted text-center py-8">Votre panier est vide</div></div>
+      <div class="border-t pt-6 space-y-4 mt-4">
+        <div class="flex justify-between"><div>Sous-total</div><div id="cart-subtotal">0,00 €</div></div>
+        <div class="flex justify-between"><div class="font-bold">Livraison</div><div id="cart-shipping" class="font-bold">0,00 €</div></div>
+        <div id="cart-discount-row" class="flex justify-between text-green-600 font-bold hidden"><div>Remise</div><div id="cart-discount-amount">-0,00 €</div></div>
+        <div class="promo-row">
+            <input type="text" id="promo-code-input" placeholder="Code Promo" class="promo-input">
+            <button id="btn-apply-promo" class="promo-btn">OK</button>
+        </div>
+        <hr class="my-2">
+        <div class="flex justify-between text-lg font-bold"><div>Total</div><div id="cart-total">0,00 €</div></div>
+        <div class="text-right text-sm muted"><span id="cart-four-times-display" class="hidden"></span></div>
+      </div>
+      <form id="quick-form" class="space-y-4 mt-6 pb-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" name="prenom" placeholder="Prénom*" required class="form-input">
+            <input type="text" name="nom" placeholder="Nom*" required class="form-input">
+          </div>
+          <input type="email" name="email" placeholder="Email*" required class="form-input">
+          <input type="tel" name="telephone" placeholder="Téléphone*" required class="form-input">
+          <hr class="border-gray-200">
+          <h4 class="font-bold">Livraison</h4>
+          <div>
+            <label for="country-selector" class="text-sm font-bold text-gray-500 mb-1 block">DESTINATION</label>
+            <select id="country-selector" class="form-input w-full"><option value="">-- Choisir --</option></select>
+          </div>
+          <div id="shipping-methods-container" class="space-y-2 mt-2"><div class="muted text-sm">Sélectionnez une destination.</div></div>
+          <div id="dom-postal-container" class="hidden mt-2"><select id="dom-postal" name="dom-postal" class="form-input"><option value="">-- Commune --</option></select></div>
+          <div id="city-container" class="space-y-4 hidden mt-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" name="codepostal" placeholder="Code Postal*" class="form-input"><input type="text" name="commune" placeholder="Commune*" class="form-input"></div>
+          </div>
+          <input type="text" name="adresse" placeholder="Adresse (N°, Rue...)*" required class="form-input mt-2">
+          <hr class="border-gray-200">
+          <div class="flex justify-center my-4"><div class="g-recaptcha" data-sitekey="6LdxFA4sAAAAAGi_sahJ3mfLrh4jsFWNXW8cfY2v"></div></div>
+          <div class="space-y-3">
+            <div class="flex justify-center my-2"><img src="assets/sumup.png" alt="Paiement" class="payment-methods-img"></div>
+            <button type="button" id="btn-submit-sumup" class="add-btn w-full" style="background-color: var(--text-main);">Payer par Carte Bancaire</button>
+            <button type="button" id="btn-submit-virement" class="btn-secondary w-full" style="background-color: transparent; border: 1px solid var(--text-main); color: var(--text-main);">Payer par Virement</button>
+            <button type="button" id="toggle-iban-button" class="text-xs text-center block underline w-full text-gray-500">Afficher l'IBAN</button>
+            <div id="virement-info" class="info-box hidden mt-2"><strong>IBAN:</strong> IE85SUMU99036512267268<br><strong>Titulaire:</strong> R.Laskari / Kicks</div>
+          </div>
+      </form>
+      <button id="btn-clear-cart" class="text-xs text-red-500 underline mt-4 text-center w-full mb-8">Vider le panier</button>
+    </div>
+  </div>
+
+  <div id="filter-overlay" class="filter-overlay" role="dialog" aria-hidden="true">
+    <div class="cart-header"><h2 class="cart-title">Filtres</h2><button id="close-filter" class="close-round-btn modal-close-btn">&times;</button></div>
+    <div class="filter-scroll-area" style="padding: 20px;">
+        <h3 class="font-bold mb-3 mt-2">Catégories</h3><div id="filter-category-mobile" class="filter-button-list"></div>
+        <h3 class="font-bold mb-3 mt-6">Tailles</h3><div id="filter-size-mobile" class="filter-button-list"></div>
+    </div>
+    <div class="filter-footer"><button id="clear-filters-mobile" class="btn-secondary w-full">Tout effacer</button></div>
+  </div>
+
+  <div id="iframe-modal" class="modal-backdrop hidden" data-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="iframe-title" class="modal-title">Info</h3>
+        <button class="close-round-btn modal-close-btn">&times;</button>
+      </div>
+      <div class="flex-grow relative">
+        <iframe id="iframe-content" src="" style="width:100%; height:100%; border:none;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div id="product-preview-modal" class="modal-backdrop hidden">
+    <div class="modal-box-product-preview">
+      <button class="close-round-btn product-preview-close absolute top-4 right-4 z-50">&times;</button>
+      <div class="preview-content">
+        <div class="preview-images">
+          <div class="preview-main-img-container">
+            <img id="preview-main-image" src="" alt="Produit">
+          </div>
+          <div id="preview-thumbs" class="flex gap-2 overflow-x-auto py-2"></div>
+        </div>
+        <div class="preview-info">
+          <div>
+            <h2 id="preview-title" class="text-3xl font-black mb-2"></h2>
+            <div id="preview-category-container" class="mb-4"></div>
+            <p id="preview-description" class="text-gray-600 text-sm leading-relaxed"></p>
+          </div>
+
+          <div>
+             <div class="flex justify-between items-baseline mb-1">
+               <label class="font-bold text-sm uppercase text-gray-500">Taille</label>
+               <a href="#" id="preview-size-guide" class="size-guide-link">Guide des tailles</a>
+             </div>
+             <select id="preview-size-select" class="form-input w-full cursor-pointer">
+               <option value="">-- Choisir --</option>
+             </select>
+          </div>
+
+          <div class="flex items-center justify-between mt-4">
+             <div>
+               <div id="preview-price" class="text-3xl font-black">--</div>
+               <div id="preview-pay4" class="text-sm font-bold text-blue-600"></div>
+             </div>
+             <div class="qty-tactile">
+                <button id="modal-qty-minus" class="qty-btn-round">－</button>
+                <span id="modal-qty-val" class="qty-val">1</span>
+                <button id="modal-qty-plus" class="qty-btn-round">＋</button>
+             </div>
+          </div>
+
+          <button id="preview-add-btn" disabled class="add-btn w-full mt-4 py-4 text-lg">
+            AJOUTER AU PANIER
+          </button>
+          
+          <div class="payment-grid mt-6">
+             <div class="payment-logo-box paypal-highlight">
+                <img src="assets/paypal.png" alt="PayPal">
+             </div>
+             <div class="payment-logo-box">
+                <img src="assets/sumup1.png" alt="SumUp">
+             </div>
+             <div class="payment-logo-box">
+                <img src="assets/googlepay.png" alt="Google Pay">
+             </div>
+             </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="alert-modal" class="modal-backdrop hidden" style="z-index: 9999;">
+    <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full text-center m-4">
+       <div class="text-red-500 text-5xl mb-4">⚠️</div>
+       <p id="alert-message" class="font-bold text-lg mb-6"></p>
+       <button class="btn-secondary w-full modal-close-btn">OK</button>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop hidden" style="z-index: 9999;">
+    <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full text-center m-4">
+       <div class="text-blue-500 text-5xl mb-4">💬</div>
+       <p id="confirm-message" class="font-bold text-lg mb-6"></p>
+       <div class="flex gap-2">
+         <button id="confirm-no" class="btn-secondary flex-1">Non</button>
+         <button id="confirm-yes" class="add-btn flex-1">Oui</button>
+       </div>
+    </div>
+  </div>
+
+  <div id="popup" class="modal-backdrop hidden" style="z-index: 9999;">
+      <div class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-md mx-4 relative overflow-hidden border-4 border-green-500">
+        <div class="text-6xl mb-4">✅</div>
+        <h3 class="text-2xl font-black mb-2 text-green-600">MERCI <span id="popup-prenom"></span> !</h3>
+        <p class="font-bold text-gray-700 mb-6">Commande validée avec succès.</p>
+        <p class="text-sm text-gray-500">Redirection dans quelques instants...</p>
+      </div>
+  </div>
+
+</body>
+</html>
